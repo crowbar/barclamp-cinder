@@ -22,10 +22,14 @@ include_recipe "#{@cookbook_name}::common"
 volname = node[:cinder][:volume][:volume_name]
 
 def make_volumes(node,volname)
-  return if Kernel.system("vgs #{volname}")
+  if Kernel.system("vgs #{volname}")
+    Chef::Log.info("Cinder: Volume group #{volname} already exists.")
+    return
+  end
   unclaimed_disks = BarclampLibrary::Barclamp::Inventory::Disk.unclaimed(node)
 
   if node[:cinder][:volume][:volume_type] == "eqlx"
+    Chef::Log.info("Cinder: Using eqlx volumes.")
     package("python-paramiko")
     #TODO(agordeev): use path_spec not hardcode
     if node[:cinder][:use_gitrepo]
@@ -38,6 +42,7 @@ def make_volumes(node,volname)
     source "eqlx.py"
     end
   elsif unclaimed_disks.empty? or node[:cinder][:volume][:volume_type] == "local"
+    Chef::Log.info("Cinder: Using local file volume backing")
     # only OS disk is exists, will use file storage
     fname = node["cinder"]["volume"]["local_file"]
     fdir = ::File.dirname(fname)
@@ -73,6 +78,7 @@ def make_volumes(node,volname)
       not_if "vgs #{volname}"
     end
   else
+    Chef::Log.info("Cinder: Using raw disks for volume backing.")
     raw_mode = node[:cinder][:volume][:cinder_raw_method]
     raw_list = node[:cinder][:volume][:cinder_volume_disks]
     # if all, then just use the checked_list
@@ -85,7 +91,11 @@ def make_volumes(node,volname)
     end
     # Now, we have the final list of devices to claim, so claim them
     claimed_disks = unclaimed_disks.select do |d|
-      raw_list.any?{|devname|devname == d.device} && d.claim("Cinder")
+      if raw_list.any?{|devname|devname == d.device} && d.claim("Cinder")
+        Chef::Log.info("Cinder: Claimed #{d.name}")
+      else
+        Chef::Log.info("Cinder: Ignoring #{d.name}")
+      end
     end
     # Now are disks are claimed.  Have our way with them.
     claimed_disks.each do |disk|
@@ -95,7 +105,7 @@ def make_volumes(node,volname)
       end
     end
     # Make our volume group.
-  bash "Create volume group #{volname}" do
+    bash "Create volume group #{volname}" do
       code "vgcreate #{volname} #{claimed_disks.map{|d|d.name}.join(' ')}"
       not_if "vgs #{volname}"
     end
