@@ -80,11 +80,7 @@ def make_volumes(node,volname)
   else
     Chef::Log.info("Cinder: Using raw disks for volume backing.")
     raw_mode = node[:cinder][:volume][:cinder_raw_method]
-    raw_list = node[:cinder][:volume][:cinder_volume_disks]
-    # if all, then just use the checked_list
-    raw_list = unclaimed_disks.map{|d|d.device} if raw_mode == "all"
-    
-    if raw_list.empty? or raw_mode == "first"
+    if raw_mode == "first"
       raw_list = [unclaimed_disks.first.device]
     else
       raw_list = raw_list.select{|d|unclaimed_disks.any?{|c|c.device == d}}
