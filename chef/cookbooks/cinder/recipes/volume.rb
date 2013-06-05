@@ -81,13 +81,13 @@ def make_volumes(node,volname)
     Chef::Log.info("Cinder: Using raw disks for volume backing.")
     raw_mode = node[:cinder][:volume][:cinder_raw_method]
     if raw_mode == "first"
-      raw_list = [unclaimed_disks.first.device]
+      raw_list = [unclaimed_disks.first]
     else
-      raw_list = raw_list.select{|d|unclaimed_disks.any?{|c|c.device == d}}
+      raw_list = unclaimed_disks
     end
     # Now, we have the final list of devices to claim, so claim them
     claimed_disks = unclaimed_disks.select do |d|
-      if raw_list.any?{|devname|devname == d.device} && d.claim("Cinder")
+      if d.claim("Cinder")
         Chef::Log.info("Cinder: Claimed #{d.name}")
       else
         Chef::Log.info("Cinder: Ignoring #{d.name}")
