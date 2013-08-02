@@ -3,7 +3,7 @@
 %p
   %label{:class => "h3", :for => "proposal_attributes"}= t('.attributes')
   = link_to t('raw'), proposal_barclamp_path(:id => @proposal.name, :controller => @proposal.barclamp, :dep_raw => @dep_raw, :attr_raw => true), :style => "float: right;"
-  %div.container
+  %div
     = render 'barclamp/git/pfsdeps.html.haml'
     = render_instance_selector("database", :database_instance, t('.database_instance'), "database_instance", @proposal)
     = render_instance_selector("rabbitmq", :rabbitmq_instance, t('.rabbitmq_instance'), "rabbitmq_instance", @proposal)
@@ -14,7 +14,7 @@
       %label{ :for => :volume_type }= t('.volume_type')
       = select_tag :volume_type, options_for_select([[t('.volume_type_raw'),'raw'], [t('.volume_type_local'), 'local'], ['NetApp', 'netapp'], ['EMC', 'emc'], ['EqualLogic','eqlx'], ['Rados', 'rbd'], [t('.volume_type_manual'), 'manual']], @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["volume_type"].to_s), :onchange => "update_volume_type_view(); update_value('volume/volume_type', 'volume_type', 'string')"
 
-    %div{ :id => 'rbd_parameters', :class => 'container' }
+    %div{ :id => 'rbd_parameters' }
       %label.section-header{ :for => :rbd_div }= t('.rbd_parameters')
       %div.section{ :id => :rbd_div }
         %p
@@ -26,7 +26,7 @@
         %p
           %label{ :for => :rbd_secret_uuid }= t('.rbd_secret_uuid')
           %input#rbd_secret_uuid{:type => "text", :name => "volume/rbd/secret_uuid", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["rbd"]["secret_uuid"], :onchange => "update_value('volume/rbd/secret_uuid', 'rbd_secret_uuid', 'string')"}
-    %div{ :id => 'netapp_parameters', :class => 'container' }
+    %div{ :id => 'netapp_parameters' }
       %label.section-header{ :for => :netapp_div }= t('.netapp_parameters')
       %div.section{ :id => :netapp_div }
         %p
@@ -58,7 +58,7 @@
           %label{ :for => :netapp_vfiler }= t('.netapp_vfiler')
           %input#netapp_vfiler{:type => "text", :name => "netapp_vfiler", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["netapp"]["netapp_vfiler"], :onchange => "update_value('volume/netapp/netapp_vfiler', 'netapp_vfiler', 'string')"}
 
-    %div{ :id => 'emc_parameters', :class => 'container' }
+    %div{ :id => 'emc_parameters' }
       %label.section-header{ :for => :emc_div }= t('.emc_parameters')
       %div.section{ :id => :emc_div }
         %p
@@ -77,7 +77,7 @@
           %label{ :for => :emc_storage_type }= t('.emc_storage_type')
           %input#emc_storage_type{:type => "text", :name => "emc_storage_type", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["emc"]["emc_storage_type"], :onchange => "update_value('volume/emc/emc_storage_type', 'emc_storage_type', 'string')"}
 
-    %div{ :id => 'eqlx_parameters', :class => 'container' }
+    %div{ :id => 'eqlx_parameters' }
       %label.section-header{ :for => :eqlx_div }= t('.eqlx_parameters')
       %div.section{ :id => :eqlx_div }
         %label{ :for => :san_ip }= t('.eqlx_san_ip')
@@ -113,7 +113,7 @@
           %label{ :for => :eqlx_cli_timeout }= t('.eqlx_cli_timeout')
           %input#eqlx_cli_timeout{:type => "text", :name => "eqlx_cli_timeout", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["eqlx"]["eqlx_cli_timeout"], :onchange => "update_value('volume/eqlx/eqlx_cli_timeout', 'eqlx_cli_timeout', 'integer')"}
 
-    %div{ :id => 'volume_file_parameters', :class => 'container' }
+    %div{ :id => 'volume_file_parameters' }
       %label.section-header{ :for => :volume_file_div }= t('.volume_file_parameters')
       %div.section{ :id => :volume_file_div }
         %label{ :for => :local_file }= t('.volume_file_name')
@@ -125,7 +125,7 @@
           %label{ :for => :volume_name_file }= t('.volume_name')
           %input.volume_name#volume_name_file{:type => "text", :name => "volume_name_file", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["volume_name"], :onchange => "update_value('volume/volume_name','volume_name_file', 'string')"}
 
-    %div{ :id => 'volume_disk_parameters', :class => 'container' }
+    %div{ :id => 'volume_disk_parameters' }
       %label.section-header{ :for => :volume_disk_div }= t('.volume_disk_parameters')
       %div.section{ :id => :volume_disk_div }
         %label{ :for => :cinder_raw_method }= t('.volume_raw_mode')
@@ -134,7 +134,7 @@
           %label{ :for => :volume_name_disk }= t('.volume_name')
           %input.volume_name#volume_name_disk{:type => "text", :name => "volume_name_disk", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["volume_name"], :onchange => "update_value('volume/volume_name','volume_name_disk', 'string')"}
 
-    %div{ :id => 'manual_parameters', :class => 'container' }
+    %div{ :id => 'manual_parameters' }
       %label.section-header{ :for => :manual_div }= t('.manual_parameters')
       %em= t('.manual_parameters_not_supported')
       %div.section{ :id => :manual_div }
