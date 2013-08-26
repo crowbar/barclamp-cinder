@@ -111,6 +111,7 @@ def make_volumes(node,volname)
     claimed_disks = unclaimed_disks.select do |d|
       if d.claim("Cinder")
         Chef::Log.info("Cinder: Claimed #{d.name}")
+        node[:cinder][:volume][:removable] = "1"
         true
       else
         Chef::Log.info("Cinder: Ignoring #{d.name}")
