@@ -495,6 +495,7 @@ auth_strategy=keystone
 #
 # Options defined in cinder.keymgr
 #
+[keymgr]
 
 # The full class name of the key manager API class (string
 # value)
@@ -521,14 +522,13 @@ auth_strategy=keystone
 # calls (boolean value)
 #use_tpool=false
 
-
 #
 # Options defined in cinder.openstack.common.db.sqlalchemy.session
 #
 
 # The SQLAlchemy connection string used to connect to the
 # database (string value)
-connection=<%= @sql_connection %>
+sql_connection=<%= @sql_connection %>
 
 # timeout before idle sql connections are reaped (integer
 # value)
@@ -697,6 +697,7 @@ use_syslog=<%= node[:cinder][:use_syslog] ? "True" : "False" %>
 #
 # Options defined in cinder.openstack.common.notifier.rpc_notifier2
 #
+[rpc_notifier2]
 
 # AMQP topic(s) used for OpenStack notifications (list value)
 #topics=notifications
@@ -914,6 +915,7 @@ rabbit_virtual_host=<%= @rabbit_settings[:vhost] %>
 #
 # Options defined in cinder.openstack.common.rpc.matchmaker_redis
 #
+[matchmaker_redis]
 
 # Host to locate redis (string value)
 #host=127.0.0.1
@@ -1138,27 +1140,39 @@ iscsi_ip_address = <%= node[:cinder][:volume]["emc"]["emc_ecom_server_ip"] %>
 #
 
 # Group name to use for creating volumes (string value)
-#eqlx_group_name=group-0
+<% unless @eqlx_params.nil? -%>
+eqlx_group_name=<%= @eqlx_params["eqlx_group_name"] %>
+<% end -%>
 
 # Timeout for the Group Manager cli command execution (integer
 # value)
-#eqlx_cli_timeout=30
+<% unless @eqlx_params.nil? -%>
+eqlx_cli_timeout=<%= @eqlx_params["eqlx_cli_timeout"] %>
+<% end -%>
 
 # Maximum retry count for reconnection (integer value)
 #eqlx_cli_max_retries=5
 
 # Use CHAP authentificaion for targets? (boolean value)
 #eqlx_use_chap=false
+<% unless @eqlx_params.nil? -%>
+eqlx_use_chap=<%= @eqlx_params["eqlx_use_chap"] %>
+<% end -%>
 
 # Existing CHAP account name (string value)
-#eqlx_chap_login=admin
+<% unless @eqlx_params.nil? -%>
+eqlx_chap_login=<%= @eqlx_params["eqlx_chap_login"] %>
+<% end -%>
 
 # Password for specified CHAP account name (string value)
-#eqlx_chap_password=password
+<% unless @eqlx_params.nil? -%>
+eqlx_chap_password=<%= @eqlx_params["eqlx_chap_password"] %>
+<% end -%>
 
 # Pool in which volumes will be created (string value)
-#eqlx_pool=default
-
+<% unless @eqlx_params.nil? -%>
+eqlx_pool=<%= @eqlx_params["eqlx_pool"] %>
+<% end -%>
 
 #
 # Options defined in cinder.volume.drivers.glusterfs
@@ -1432,42 +1446,99 @@ netapp_transport_type=<%= @netapp_params['netapp_transport_type'] %>
 #
 # Options defined in cinder.volume.drivers.rbd
 #
-#
-<% unless @rbd_params.nil? -%>
-volume_driver=cinder.volume.drivers.rbd.RBDDriver
 
 # the RADOS pool in which rbd volumes are stored (string
 # value)
-rbd_pool=<%= @rbd_params['pool'] %>
+<% unless @rbd_params.nil? %>rbd_pool=<%= @rbd_params['pool'] %><% end -%>
 
-# the RADOS client name for accessing rbd volumes (string
-# value)
-rbd_user=<%= @rbd_params['user'] %>
+# the RADOS client name for accessing rbd volumes - only set
+# when using cephx authentication (string value)
+<% unless @rbd_params.nil? %>rbd_user=<%= @rbd_params['user'] %><% end -%>
+
+# path to the ceph configuration file to use (string value)
+#rbd_ceph_conf=
+
+# flatten volumes created from snapshots to remove dependency
+# (boolean value)
+#rbd_flatten_volume_from_snapshot=false
 
 # the libvirt uuid of the secret for the rbd_uservolumes
 # (string value)
-rbd_secret_uuid=<%= @rbd_params['secret_uuid'] %>
+<% unless @rbd_params.nil? %>rbd_secret_uuid=<%= @rbd_params['secret_uuid'] %><% end -%>
 
 # where to store temporary image files if the volume driver
 # does not write them directly to the volume (string value)
 #volume_tmp_dir=<None>
-<% end -%>
+
+# maximum number of nested clones that can be taken of a
+# volume before enforcing a flatten prior to next clone. A
+# value of zero disables cloning (integer value)
+#rbd_max_clone_depth=5
+
+
+#
+# Options defined in cinder.volume.drivers.san.hp.hp_3par_common
+#
+
+# 3PAR WSAPI Server Url like https://<3par ip>:8080/api/v1
+# (string value)
+#hp3par_api_url=
+
+# 3PAR Super user username (string value)
+#hp3par_username=
+
+# 3PAR Super user password (string value)
+#hp3par_password=
+
+# This option is DEPRECATED and no longer used. The 3par
+# domain name to use. (string value)
+#hp3par_domain=<None>
+
+# The CPG to use for volume creation (string value)
+#hp3par_cpg=OpenStack
+
+# The CPG to use for Snapshots for volumes. If empty
+# hp3par_cpg will be used (string value)
+#hp3par_cpg_snap=
+
+# The time in hours to retain a snapshot.  You can't delete it
+# before this expires. (string value)
+#hp3par_snapshot_retention=
+
+# The time in hours when a snapshot expires  and is deleted.
+# This must be larger than expiration (string value)
+#hp3par_snapshot_expiration=
+
+# Enable HTTP debugging to 3PAR (boolean value)
+#hp3par_debug=false
+
+# List of target iSCSI addresses to use. (list value)
+#hp3par_iscsi_ips=
+
 
 #
 # Options defined in cinder.volume.drivers.san.san
 #
 
 # Use thin provisioning for SAN volumes? (boolean value)
-#san_thin_provision=true
+<% unless @eqlx_params.nil? -%>
+san_thin_provision=<%= @eqlx_params["san_thin_provision"] %>
+<% end -%>
 
 # IP address of SAN controller (string value)
-#san_ip=
+<% unless @eqlx_params.nil? -%>
+san_ip=<%= @eqlx_params["san_ip"] %>
+<% end -%>
 
 # Username for SAN controller (string value)
-#san_login=admin
+<% unless @eqlx_params.nil? -%>
+san_login=<%= @eqlx_params["san_login"] %>
+<% end -%>
 
 # Password for SAN controller (string value)
-#san_password=
+<% unless @eqlx_params.nil? -%>
+san_password=<%= @eqlx_params["san_password"] %>
+<% end -%>
 
 # Filename of private key to use for SSH authentication
 # (string value)
@@ -1527,6 +1598,13 @@ rbd_secret_uuid=<%= @rbd_params['secret_uuid'] %>
 # Allow tenants to specify QOS on create (boolean value)
 #sf_allow_tenant_qos=false
 
+# Create SolidFire accounts with this prefix (string value)
+#sf_account_prefix=cinder
+
+# SolidFire API port. Useful if the device api is behind a
+# proxy on a different port. (integer value)
+#sf_api_port=443
+
 
 #
 # Options defined in cinder.volume.drivers.storwize_svc
@@ -1536,11 +1614,11 @@ rbd_secret_uuid=<%= @rbd_params['secret_uuid'] %>
 #storwize_svc_volpool_name=volpool
 
 # Storage system space-efficiency parameter for volumes
-# (string value)
-#storwize_svc_vol_rsize=2%
+# (percentage) (integer value)
+#storwize_svc_vol_rsize=2
 
 # Storage system threshold for volume capacity warnings
-# (string value)
+# (percentage) (integer value)
 #storwize_svc_vol_warning=0
 
 # Storage system autoexpand parameter for volumes (True/False)
@@ -1548,7 +1626,7 @@ rbd_secret_uuid=<%= @rbd_params['secret_uuid'] %>
 #storwize_svc_vol_autoexpand=true
 
 # Storage system grain size parameter for volumes
-# (32/64/128/256) (string value)
+# (32/64/128/256) (integer value)
 #storwize_svc_vol_grainsize=256
 
 # Storage system compression option for volumes (boolean
@@ -1558,14 +1636,75 @@ rbd_secret_uuid=<%= @rbd_params['secret_uuid'] %>
 # Enable Easy Tier for volumes (boolean value)
 #storwize_svc_vol_easytier=true
 
+# The I/O group in which to allocate volumes (integer value)
+#storwize_svc_vol_iogrp=0
+
 # Maximum number of seconds to wait for FlashCopy to be
-# prepared. Maximum value is 600 seconds (10 minutes). (string
+# prepared. Maximum value is 600 seconds (10 minutes) (integer
 # value)
 #storwize_svc_flashcopy_timeout=120
 
+# Connection protocol (iSCSI/FC) (string value)
+#storwize_svc_connection_protocol=iSCSI
+
+# Configure CHAP authentication for iSCSI connections
+# (Default: Enabled) (boolean value)
+#storwize_svc_iscsi_chap_enabled=true
+
+# Connect with multipath (FC only; iSCSI multipath is
+# controlled by Nova) (boolean value)
+#storwize_svc_multipath_enabled=false
+
+# Allows vdisk to multi host mapping (boolean value)
+#storwize_svc_multihostmap_enabled=true
+
 
 #
-# Options defined in cinder.volume.drivers.windows
+# Options defined in cinder.volume.drivers.vmware.vmdk
+#
+
+# IP address for connecting to VMware ESX/VC server. (string
+# value)
+#vmware_host_ip=<None>
+
+# Username for authenticating with VMware ESX/VC server.
+# (string value)
+#vmware_host_username=<None>
+
+# Password for authenticating with VMware ESX/VC server.
+# (string value)
+#vmware_host_password=<None>
+
+# Optional VIM service WSDL Location e.g
+# http://<server>/vimService.wsdl. Optional over-ride to
+# default location for bug work-arounds. (string value)
+#vmware_wsdl_location=<None>
+
+# Number of times VMware ESX/VC server API must be retried
+# upon connection related issues. (integer value)
+#vmware_api_retry_count=10
+
+# The interval used for polling remote tasks invoked on VMware
+# ESX/VC server. (integer value)
+#vmware_task_poll_interval=5
+
+# Name for the folder in the VC datacenter that will contain
+# cinder volumes. (string value)
+#vmware_volume_folder=cinder-volumes
+
+# Timeout in seconds for VMDK volume transfer between Cinder
+# and Glance. (integer value)
+#vmware_image_transfer_timeout_secs=7200
+
+# Max number of objects to be retrieved per batch. Query
+# results will be obtained in batches from the server and not
+# in one shot. Server may still limit the count to something
+# less than the configured value. (integer value)
+#vmware_max_objects_retrieval=100
+
+
+#
+# Options defined in cinder.volume.drivers.windows.windows
 #
 
 # Path to store VHD backed volumes (string value)
@@ -1591,13 +1730,21 @@ rbd_secret_uuid=<%= @rbd_params['secret_uuid'] %>
 # Password for XenAPI connection (string value)
 #xenapi_connection_password=<None>
 
+# Base path to the storage repository (string value)
+#xenapi_sr_base_path=/var/run/sr-mount
+
 
 #
-# Options defined in cinder.volume.drivers.xiv
+# Options defined in cinder.volume.drivers.xiv_ds8k
 #
 
-# Proxy driver (string value)
-#xiv_proxy=xiv_openstack.nova_proxy.XIVNovaProxy
+# Proxy driver that connects to the IBM Storage Array (string
+# value)
+#xiv_ds8k_proxy=xiv_ds8k_openstack.nova_proxy.XIVDS8KNovaProxy
+
+# Connection type to the IBM Storage Array
+# (fibre_channel|iscsi) (string value)
+#xiv_ds8k_connection_type=iscsi
 
 
 #
@@ -1622,11 +1769,11 @@ rbd_secret_uuid=<%= @rbd_params['secret_uuid'] %>
 # Name of VPSA storage pool for volumes (string value)
 #zadara_vpsa_poolname=<None>
 
-# Default cache policy for volumes (string value)
-#zadara_default_cache_policy=write-through
+# Default thin provisioning policy for volumes (boolean value)
+#zadara_vol_thin=true
 
-# Default encryption policy for volumes (string value)
-#zadara_default_encryption=NO
+# Default encryption policy for volumes (boolean value)
+#zadara_vol_encrypt=false
 
 # Default striping mode for volumes (string value)
 #zadara_default_striping_mode=simple
@@ -1647,68 +1794,43 @@ rbd_secret_uuid=<%= @rbd_params['secret_uuid'] %>
 
 
 #
-# Options defined in cinder.volume.iscsi
-#
-
-# iscsi target user-land tool to use (string value)
-#iscsi_helper=tgtadm
-
-# Volume configuration file storage directory (string value)
-#volumes_dir=$state_path/volumes
-
-# IET configuration file (string value)
-#iet_conf=/etc/iet/ietd.conf
-
-# Comma-separatd list of initiator IQNs allowed to connect to
-# the iSCSI target. (From Nova compute nodes.) (string value)
-#lio_initiator_iqns=
-
-
-#
 # Options defined in cinder.volume.manager
 #
 
 # Driver to use for volume creation (string value)
-#volume_driver=cinder.volume.drivers.lvm.LVMISCSIDriver
-#
-<% unless @eqlx_params.nil? -%>
-volume_driver=cinder.volume.drivers.eqlx.DellEQLSanISCSIDriver
-<%   @eqlx_params.each do |k, v| -%>
-<%=    k + '=' + v.to_s %> 
-<%   end -%>
+<% unless @rbd_params.nil? -%>
+volume_driver=cinder.volume.drivers.rbd.RBDDriver
 <% end -%>
-
+<% unless @eqlx_params.nil? -%>
+volume_driver=cinder.volume.eqlx.DellEQLSanISCSIDriver
+<% end -%>
 <% unless @netapp_params.nil? -%>
 volume_driver=<%= @netapp_params['netapp_driver'] %>
 <% end -%>
-
 <% unless @emc_params.nil? -%>
 volume_driver=cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver
-cinder_emc_config_file = /etc/cinder/cinder_emc_config.xml
 <% end -%>
-
-
 <% unless @manual_driver.nil? -%>
 volume_driver=<%= @manual_driver %>
 <%= @manual_driver_config %>
 <% end -%>
 
+# Timeout for creating the volume to migrate to when
+# performing volume migration (seconds) (integer value)
+#migration_create_volume_timeout_secs=300
+
+# Offload pending volume delete during volume service startup
+# (boolean value)
+#volume_service_inithost_offload=false
+
+
 #
-# Multi backend options
+# Options defined in cinder.volume.utils
 #
 
-# Define the names of the groups for multiple volume backends
-#enabled_backends=fakedriver,lvmdriver
-
-# Define the groups as above
-#[lvmdriver]
-#volume_group=lvm-group-1
-#volume_driver=cinder.volume.drivers.lvm.LVMISCSIDriver
-#volume_backend_name=LVM_iSCSI_unique1
-#[fakedriver]
-#volume_driver=cinder.volume.driver.FakeISCSIDriver
+# The default block size used when copying/clearing volumes
+# (string value)
+#volume_dd_blocksize=1M
 
 
-# Total option count: 255
-
-
+# Total option count: 382
