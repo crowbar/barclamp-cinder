@@ -43,14 +43,30 @@ class CinderService < ServiceObject
     nodes = NodeObject.all
     nodes.delete_if { |n| n.nil? or n.admin? }
     if nodes.size >= 1
+      controller        = nodes.detect { |n| n.intended_role == "controller"} || nodes.first
+      storage           = nodes.detect { |n| n.intended_role == "storage" } || controller
       base["deployment"]["cinder"]["elements"] = {
-        "cinder-controller" => [ nodes.first[:fqdn] ],
-        "cinder-volume" => [ nodes.first[:fqdn] ]
+        "cinder-controller"     => [ controller[:fqdn] ],
+        "cinder-volume"         => [ storage[:fqdn] ]
       }
     end
 
     insts = ["Database", "Keystone", "Glance", "Rabbitmq"]
-    insts << "Git" if base["attributes"][@bc_name]["use_gitrepo"]
+
+    base["attributes"][@bc_name]["git_instance"] = ""
+    begin
+      gitService = GitService.new(@logger)
+      gits = gitService.list_active[1]
+      if gits.empty?
+        # No actives, look for proposals
+        gits = gitService.proposals[1]
+      end
+      unless gits.empty?
+        base["attributes"][@bc_name]["git_instance"] = gits[0]
+      end
+    rescue
+      @logger.info("#{@bc_name} create_proposal: no git found")
+    end
 
     insts.each do |inst|
       base["attributes"][@bc_name]["#{inst.downcase}_instance"] = ""
@@ -88,6 +104,18 @@ class CinderService < ServiceObject
     @logger.debug("Cinder create_proposal: exiting")
     base
   end
+
+  def validate_proposal_after_save proposal
+    super
+    if proposal["attributes"][@bc_name]["use_gitrepo"]
+      gitService = GitService.new(@logger)
+      gits = gitService.list_active[1].to_a
+      if not gits.include?proposal["attributes"][@bc_name]["git_instance"]
+        raise(I18n.t('model.service.dependency_missing', :name => @bc_name, :dependson => "git"))
+      end
+    end
+  end
+
 
   def apply_role_pre_chef_call(old_role, role, all_nodes)
     @logger.debug("Cinder apply_role_pre_chef_call: entering #{all_nodes.inspect}")

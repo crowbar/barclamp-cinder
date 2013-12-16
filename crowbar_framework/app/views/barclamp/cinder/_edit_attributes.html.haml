@@ -4,7 +4,6 @@
   %label{:class => "h3", :for => "proposal_attributes"}= t('.attributes')
   = link_to t('raw'), proposal_barclamp_path(:id => @proposal.name, :controller => @proposal.barclamp, :dep_raw => @dep_raw, :attr_raw => true), :style => "float: right;"
   %div.container
-    = render 'barclamp/git/pfsdeps.html.haml'
     = render_instance_selector("database", :database_instance, t('.database_instance'), "database_instance", @proposal)
     = render_instance_selector("rabbitmq", :rabbitmq_instance, t('.rabbitmq_instance'), "rabbitmq_instance", @proposal)
     = render_instance_selector("keystone", :keystone_instance, t('.keystone_instance'), "keystone_instance", @proposal)
@@ -23,9 +22,6 @@
         %p
           %label{ :for => :rbd_user }= t('.rbd_user')
           %input#rbd_user{:type => "text", :name => "volume/rbd/user", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["rbd"]["user"], :onchange => "update_value('volume/rbd/user', 'rbd_user', 'string')"}
-        %p
-          %label{ :for => :rbd_secret_uuid }= t('.rbd_secret_uuid')
-          %input#rbd_secret_uuid{:type => "text", :name => "volume/rbd/secret_uuid", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["rbd"]["secret_uuid"], :onchange => "update_value('volume/rbd/secret_uuid', 'rbd_secret_uuid', 'string')"}
     %div{ :id => 'netapp_parameters', :class => 'container' }
       %label.section-header{ :for => :netapp_div }= t('.netapp_parameters')
       %div.section{ :id => :netapp_div }
@@ -129,7 +125,7 @@
       %label.section-header{ :for => :volume_disk_div }= t('.volume_disk_parameters')
       %div.section{ :id => :volume_disk_div }
         %label{ :for => :cinder_raw_method }= t('.volume_raw_mode')
-        = select_tag :cinder_raw_method, options_for_select([['first','first'], ['all', 'all']], @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["cinder_raw_method"].to_s), :onchange => "update_value('volume/cinder_raw_method', 'cinder_raw_method', 'string')"
+        = select_tag :cinder_raw_method, options_for_select([['all', 'all']], @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["cinder_raw_method"].to_s), :onchange => "update_value('volume/cinder_raw_method', 'cinder_raw_method', 'string')"
         %p
           %label{ :for => :volume_name_disk }= t('.volume_name')
           %input.volume_name#volume_name_disk{:type => "text", :name => "volume_name_disk", :'data-default' => @proposal.raw_data['attributes'][@proposal.barclamp]["volume"]["volume_name"], :onchange => "update_value('volume/volume_name','volume_name_disk', 'string')"}
@@ -174,6 +170,7 @@
         %p
           %label{ :for => :ssl_ca_certs }= t('.ssl_ca_certs')
           = text_field_tag :ssl_ca_certs, @proposal.raw_data['attributes'][@proposal.barclamp]["ssl"]["ca_certs"], :class=> "input-xxlarge", :size => 80, :onchange => "update_value('ssl/ca_certs', 'ssl_ca_certs', 'string')"
+    = render 'barclamp/git/pfsdeps.html.haml'
 
 
 :javascript
