@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 def upgrade ta, td, a, d
   a["volume"]["netapp"]["nfs_shares"] = ta["volume"]["netapp"]["nfs_shares"]
   return a, d
