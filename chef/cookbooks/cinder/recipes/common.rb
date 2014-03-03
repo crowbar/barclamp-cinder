@@ -38,7 +38,6 @@ if node[:cinder][:use_gitrepo]
      mode 0755
      action :create
    end
-end
 
   execute "cp_policy.json_#{@cookbook_name}" do
     command "cp #{cinder_path}/etc/cinder/policy.json /etc/cinder/"
