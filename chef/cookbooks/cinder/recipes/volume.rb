@@ -81,7 +81,7 @@ def make_loopback_volume(node,volname)
   end
 
   bash "create volume group" do
-    code "losetup --show -f #{fname} && vgcreate #{volname} `losetup -j #{fname} | cut -f1 -d:`"
+    code "losetup -f #{fname} && vgcreate #{volname} `losetup -j #{fname} | cut -f1 -d:`"
     not_if "vgs #{volname}"
   end
 end
