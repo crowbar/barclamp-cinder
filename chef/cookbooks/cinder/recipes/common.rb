@@ -32,13 +32,12 @@ if node[:cinder][:use_gitrepo]
     user_name node[:cinder][:user]
   end
 
-unless %w(redhat centos suse).include?(node.platform)
   directory "/var/cache/cinder" do
-     owner "cinder"
-     group "root"
+     node[:cinder][:user]
+     node[:cinder][:group]
      mode 0755
      action :create
-  end
+   end
 end
 
   execute "cp_policy.json_#{@cookbook_name}" do
