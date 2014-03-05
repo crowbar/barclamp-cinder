@@ -33,8 +33,8 @@ if node[:cinder][:use_gitrepo]
   end
 
   directory "/var/cache/cinder" do
-     node[:cinder][:user]
-     node[:cinder][:group]
+     owner node[:cinder][:user]
+     group node[:cinder][:group]
      mode 0755
      action :create
    end
