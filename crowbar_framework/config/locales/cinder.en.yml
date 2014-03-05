@@ -13,12 +13,15 @@ en:
           raw: Raw devices
           local: Local file
           manually: Other driver
-          disk_parameters: Disk-based Parameters
-          cinder_raw_method: Disk selection method
-          volume_name: Name of Volume
-          file_parameters: File-based Parameters
-          local_file: Volume File Name
-          local_size: Maximum File Size (GB)
+          raw_parameters: Disk-based Parameters
+          raw:
+            volume_name: Name of Volume
+            cinder_raw_method: Disk selection method
+          local_parameters: File-based Parameters
+          local:
+            volume_name: Name of Volume
+            file_name: Volume File Name
+            file_size: Maximum File Size (GB)
           netapp_parameters: NetApp Parameters
           netapp:
             storage_family: Storage Family Type
