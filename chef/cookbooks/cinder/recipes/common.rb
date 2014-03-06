@@ -33,10 +33,11 @@ if node[:cinder][:use_gitrepo]
   end
   
   directory "/var/cache/cinder" do
-     owner node[:cinder][:user]
-     group node[:cinder][:group]
-     mode 0755
-     action :create
+    owner node[:cinder][:user]
+    group node[:cinder][:group]
+    mode 0755
+    action :create
+    only_if { node[:platform] == "ubuntu" }
    end
 
   execute "cp_policy.json_#{@cookbook_name}" do
