@@ -1927,7 +1927,12 @@ netapp_transport_type=<%= backend_params[:netapp][:netapp_transport_type] %>
     <% when "emc" %>
 volume_driver=cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver
 cinder_emc_config_file=<%= "/etc/cinder/cinder_emc_config-#{backend_name}.xml" %>
+      <% case backend_params[:emc_storage_type].downcase %>
+      <% when "vnx" %>
 iscsi_target_prefix = iqn.2001-07.com.vnx
+      <% when "vmax" %>
+iscsi_target_prefix = iqn.1992-04.com.emc
+      <% end %>
 iscsi_ip_address = <%= backend_params[:emc][:emc_ecom_server_ip] %>
     <% when "rbd" %>
 volume_driver=cinder.volume.drivers.rbd.RBDDriver

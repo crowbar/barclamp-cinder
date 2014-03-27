@@ -73,9 +73,9 @@
           },
           "emc": {
             "emc_storage_type": "",
+            "masking_view": "",
             "ecom_server_ip": "192.168.124.11",
             "ecom_server_port": 0,
-            "masking_view": "",
             "ecom_server_username": "admin",
             "ecom_server_password": ""
           },
