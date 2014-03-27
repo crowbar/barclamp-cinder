@@ -160,77 +160,31 @@ rabbit_settings = {
   :vhost => rabbit[:rabbitmq][:vhost]
 }
 
-if node[:cinder][:volume][:volume_type] == "raw"
-  Chef::Log.info("Pushing raw params to cinder.conf template")
-  raw_params = node[:cinder][:volume][:raw]
-else
-  raw_params = nil
-end
-
-if node[:cinder][:volume][:volume_type] == "local"
-  Chef::Log.info("Pushing local params to cinder.conf template")
-  local_params = node[:cinder][:volume][:local]
-else
-  local_params = nil
-end
-
-if node[:cinder][:volume][:volume_type] == "eqlx"
-  Chef::Log.info("Pushing EQLX params to cinder.conf template")
-  eqlx_params = node[:cinder][:volume][:eqlx]
-else
-  eqlx_params = nil
-end
-
-if node[:cinder][:volume][:volume_type] == "netapp"
-  Chef::Log.info("Pushing NetApp params to cinder.conf template")
-  netapp_params = node[:cinder][:volume][:netapp]
-else
-  netapp_params = nil
-end
-
-if node[:cinder][:volume][:volume_type] == "emc"
-  Chef::Log.info("Pushing EMC params to cinder.conf template")
-  emc_params = node[:cinder][:volume][:emc]
-
-  template "/etc/cinder/cinder_emc_config.xml" do
-    source "cinder_emc_config.xml.erb"
-    owner node[:cinder][:user]
-    group "root"
-    mode 0640
-    variables(
-              :emc_params => emc_params
-             )
+node[:cinder][:volume].each do |backend_name, backend_params|
+  case backend_params[:volume_type]
+  when "emc"
+    emc_config_filename ="/etc/cinder/cinder_emc_config-#{backend_name}.xml" 
+    Chef::Log.info("Creating #{emc_config_filename} for emc backend #{backend_name}")
+    template emc_config_filename do
+      source "cinder_emc_config.xml.erb"
+      owner node[:cinder][:user]
+      group "root"
+      mode 0640
+      variables(:emc_params => backend_params[:emc])
+    end
+  when "rbd"
+    #TODO/FIXME(saschpe): check/fix ceph::cinder cookbook!!!!
+    #Chef::Log.info("Pushing Rbd params to cinder.conf template")
+    ceph_env_filter = " AND ceph_config_environment:ceph-config-default"
+    ceph_servers = search(:node, "roles:ceph-osd#{ceph_env_filter}") || []
+    if ceph_servers.length > 0
+      include_recipe "ceph::cinder"
+    end
+    if node[:platform] == "suse"
+      package "ceph"
+      package "python-ceph"
+    end
   end
-else
-  emc_params = nil
-end
-
-if node[:cinder][:volume][:volume_type] == "rbd"
-  Chef::Log.info("Pushing Rbd params to cinder.conf template")
-  rbd_params = node[:cinder][:volume][:rbd]
-
-  ceph_env_filter = " AND ceph_config_environment:ceph-config-default"
-  ceph_servers = search(:node, "roles:ceph-osd#{ceph_env_filter}") || []
-  if ceph_servers.length > 0
-    include_recipe "ceph::cinder"
-  end
-
-  if node[:platform] == "suse"
-    package "ceph"
-    package "python-ceph"
-  end
-
-else
-  rbd_params = nil
-end
-
-if node[:cinder][:volume][:volume_type] == "manual"
-  Chef::Log.info("Pushing manual params to cinder.conf template")
-  manual_driver = node[:cinder][:volume][:manual][:driver]
-  manual_driver_config = node[:cinder][:volume][:manual][:config]
-else
-  manual_driver = nil
-  manual_driver_config = nil
 end
 
 if node[:cinder][:api][:protocol] == 'https'
@@ -322,14 +276,6 @@ template "/etc/cinder/cinder.conf" do
   variables(
             :bind_host => bind_host,
             :bind_port => bind_port,
-            :raw_params => raw_params,
-            :local_params => local_params,
-            :eqlx_params => eqlx_params,
-            :emc_params => emc_params,
-            :rbd_params => rbd_params,
-            :netapp_params => netapp_params,
-            :manual_driver => manual_driver,
-            :manual_driver_config => manual_driver_config,
             :sql_connection => sql_connection,
             :rabbit_settings => rabbit_settings,
             :glance_server_protocol => glance_server_protocol,
@@ -338,7 +284,7 @@ template "/etc/cinder/cinder.conf" do
             :glance_server_insecure => glance_server_insecure,
             :nova_api_insecure => nova_api_insecure,
             :availability_zone => availability_zone
-            )
+  )
 end
 
 node.save

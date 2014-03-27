@@ -33,69 +33,75 @@
               "type": "map",
               "required": true,
               "mapping": {
-                "volume_type": { "type": "str", "required": true },
-                "local": {
-                  "type": "map", "required": true, "mapping": {
-                    "volume_name": { "type": "str", "required": true },
-                    "file_name": { "type": "str", "required": true },
-                    "file_size": { "type": "int", "required": true }
-                  }
-                },
-                "raw": {
-                  "type": "map", "required": true, "mapping": {
-                    "volume_name": { "type": "str", "required": true },
-                    "cinder_raw_method": { "type": "str", "required": true }
-                  }
-                },
-                "eqlx": {
-                  "type": "map", "required": true, "mapping": {
-                    "san_ip": { "type": "str", "required": true },
-                    "san_login": { "type": "str", "required": true },
-                    "san_password": { "type": "str", "required": true },
-                    "san_thin_provision": { "type": "bool", "required": true },
-                    "eqlx_group_name": { "type": "str", "required": true },
-                    "eqlx_use_chap": { "type": "bool", "required": true },
-                    "eqlx_chap_login": { "type": "str", "required": true },
-                    "eqlx_chap_password": { "type": "str", "required": true },
-                    "eqlx_cli_timeout": { "type": "int", "required": true },
-                    "eqlx_pool": { "type": "str", "required": true }
-                  }
-                },
-                "netapp": {
-                  "type": "map", "required": true, "mapping": {
-                    "storage_family": { "type": "str", "required": true },
-                    "storage_protocol": { "type": "str", "required": true },
-                    "nfs_shares": { "type": "str", "required": true },
-                    "vserver": { "type": "str", "required": true },
-                    "netapp_server_hostname": { "type": "str", "required": true },
-                    "netapp_server_port": { "type": "int", "required": true },
-                    "netapp_login": { "type": "str", "required": true },
-                    "netapp_password": { "type": "str", "required": true },
-                    "netapp_vfiler": { "type": "str", "required": true },
-                    "netapp_transport_type": { "type": "str", "required": true },
-                    "netapp_volume_list": { "type": "str", "required": true }
-                  }
-                },
-                "emc": {
-                  "type": "map", "required": true, "mapping": {
-                    "ecom_server_ip": { "type": "str", "required": true },
-                    "emc_storage_type": { "type": "str", "required": true },
-                    "masking_view": { "type": "str", "required": true },
-                    "ecom_server_port": { "type": "int", "required": true },
-                    "ecom_server_username": { "type": "str", "required": true },
-                    "ecom_server_password": { "type": "str", "required": true }
-                  }
-                },
-                "rbd": {
-                  "type": "map", "required": true, "mapping": {
-                    "pool": { "type": "str", "required": true },
-                    "user": { "type": "str", "required": true }
+                = : {
+                  "type": "map",
+                  "required": true,
+                  "mapping": {
+                    "volume_type": { "type": "str", "required": true },
+                    "local": {
+                      "type": "map", "required": true, "mapping": {
+                        "volume_name": { "type": "str", "required": true },
+                        "file_name": { "type": "str", "required": true },
+                        "file_size": { "type": "int", "required": true }
+                      }
+                    },
+                    "raw": {
+                      "type": "map", "required": true, "mapping": {
+                        "volume_name": { "type": "str", "required": true },
+                        "cinder_raw_method": { "type": "str", "required": true }
+                      }
+                    },
+                    "eqlx": {
+                      "type": "map", "required": true, "mapping": {
+                        "san_ip": { "type": "str", "required": true },
+                        "san_login": { "type": "str", "required": true },
+                        "san_password": { "type": "str", "required": true },
+                        "san_thin_provision": { "type": "bool", "required": true },
+                        "eqlx_group_name": { "type": "str", "required": true },
+                        "eqlx_use_chap": { "type": "bool", "required": true },
+                        "eqlx_chap_login": { "type": "str", "required": true },
+                        "eqlx_chap_password": { "type": "str", "required": true },
+                        "eqlx_cli_timeout": { "type": "int", "required": true },
+                        "eqlx_pool": { "type": "str", "required": true }
+                      }
+                    },
+                    "netapp": {
+                      "type": "map", "required": true, "mapping": {
+                        "storage_family": { "type": "str", "required": true },
+                        "storage_protocol": { "type": "str", "required": true },
+                        "nfs_shares": { "type": "str", "required": true },
+                        "vserver": { "type": "str", "required": true },
+                        "netapp_server_hostname": { "type": "str", "required": true },
+                        "netapp_server_port": { "type": "int", "required": true },
+                        "netapp_login": { "type": "str", "required": true },
+                        "netapp_password": { "type": "str", "required": true },
+                        "netapp_vfiler": { "type": "str", "required": true },
+                        "netapp_transport_type": { "type": "str", "required": true },
+                        "netapp_volume_list": { "type": "str", "required": true }
+                      }
+                    },
+                    "emc": {
+                      "type": "map", "required": true, "mapping": {
+                        "ecom_server_ip": { "type": "str", "required": true },
+                        "emc_storage_type": { "type": "str", "required": true },
+                        "masking_view": { "type": "str", "required": true },
+                        "ecom_server_port": { "type": "int", "required": true },
+                        "ecom_server_username": { "type": "str", "required": true },
+                        "ecom_server_password": { "type": "str", "required": true }
+                      }
+                    },
+                    "rbd": {
+                      "type": "map", "required": true, "mapping": {
+                        "pool": { "type": "str", "required": true },
+                        "user": { "type": "str", "required": true }
+                        }
+                    },
+                    "manual": {
+                      "type": "map", "required": true, "mapping": {
+                        "driver": { "type": "str", "required": true },
+                        "config": { "type": "str", "required": true }
+                      }
                     }
-                },
-                "manual": {
-                  "type": "map", "required": true, "mapping": {
-                    "driver": { "type": "str", "required": true },
-                    "config": { "type": "str", "required": true }
                   }
                 }
               }
