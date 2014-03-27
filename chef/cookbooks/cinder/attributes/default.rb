@@ -32,8 +32,6 @@ default[:cinder][:ssl][:insecure] = false
 default[:cinder][:ssl][:cert_required] = false
 default[:cinder][:ssl][:ca_certs] = "/etc/cinder/ssl/certs/ca.pem"
 
-default[:cinder][:volume][:rbd][:ceph_conf] = '/etc/ceph/ceph.conf'
-
 default[:cinder][:ha][:enabled] = false
 # Ports to bind to when haproxy is used for the real ports
 default[:cinder][:ha][:ports][:api] = 5520
