@@ -1890,7 +1890,6 @@ signing_dir=/var/cache/cinder/keystone-signing
 #include_service_catalog=true
 
 # Total option count: 382
-#TODO/FIXME(saschpe): Add 'volume_backend_name' configurable per backend!!!
 <% node[:cinder][:volume].each do |backend_name, backend_params| %>
 [<%= backend_name %>]
   <% case backend_params[:volume_type] %>
@@ -1940,4 +1939,5 @@ volume_driver=<%= backend_params[:manual][:driver] %>
 <%= backend_params[:manual][:config] %>
     <% end %>
   <% end %>
+volume_backend_name=<%= backend_params[:volume_backend_name] %>
 <% end %>

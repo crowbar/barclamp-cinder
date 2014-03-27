@@ -36,6 +36,7 @@
       "volume": {
         "default": {
           "volume_type": "raw",
+          "volume_backend_name": "lvm_iscsi",
           "raw": {
             "volume_name": "cinder-volumes",
             "cinder_raw_method": "first"
@@ -111,7 +112,7 @@
   "deployment": {
     "cinder": {
       "crowbar-revision": 0,
-      "schema-revision": 8,
+      "schema-revision": 9,
       "element_states": {
           "cinder-controller": [ "readying", "ready", "applying" ],
           "cinder-volume": [ "readying", "ready", "applying" ]
