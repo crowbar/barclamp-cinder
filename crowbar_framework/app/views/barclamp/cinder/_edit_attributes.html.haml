@@ -116,4 +116,4 @@
         = boolean_field %w(ssl cert_required), data: { enabler: "true", enabler_target: "#ssl_ca_certs" }
         = string_field %w(ssl ca_certs)
 
-    = render "barclamp/git/pfsdeps"
+    = render partial: "barclamp/git/pfsdeps"
