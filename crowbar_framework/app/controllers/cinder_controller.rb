@@ -23,4 +23,8 @@ class CinderController < BarclampController
   def initialize_service
     @service_object = CinderService.new logger
   end
+
+  def permitted_params
+    params.require(:cinder)
+  end
 end
