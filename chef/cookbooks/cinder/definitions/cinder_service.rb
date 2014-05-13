@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 define :cinder_service, :use_pacemaker_provider => false, :virtualenv => nil do
 
   cinder_service_name="cinder-#{params[:name]}"

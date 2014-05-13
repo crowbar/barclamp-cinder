@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 def upgrade ta, td, a, d
   a["volume"]["eqlx"].delete('eqlx_ssh_keepalive_interval')
   return a, d

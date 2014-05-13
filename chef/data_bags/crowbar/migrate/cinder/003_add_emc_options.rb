@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 def upgrade ta, td, a, d
   a["volume"]["emc"]["masking_view"] = ta["volume"]["emc"]["masking_view"]
   return a, d

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 def upgrade ta, td, a, d
   case a["volume"]["netapp"]["netapp_driver"]
   when "cinder.volume.drivers.netapp.iscsi.NetAppDirect7modeISCSIDriver"

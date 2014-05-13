@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 name "cinder-controller"
 description "Cinder API and Scheduler Role"
 run_list(

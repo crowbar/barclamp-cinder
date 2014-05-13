@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 name "cinder-volume"
 description "Cinder volume Role"
 run_list(
