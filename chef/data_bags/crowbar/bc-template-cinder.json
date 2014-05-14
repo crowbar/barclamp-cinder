@@ -34,51 +34,59 @@
         "pip://python-cinderclient>=1.0.5"
       ],
       "volume": {
-        "volume_name": "cinder-volumes",
-        "volume_type": "raw",
-        "cinder_raw_method": "first",
-        "local_file": "/var/lib/cinder/volume.raw",
-        "local_size": 2000,
-        "eqlx": {
-          "san_ip": "192.168.124.11",
-          "san_login": "grpadmin",
-          "san_password": "12345",
-          "san_thin_provision": false,
-          "eqlx_group_name": "group-0",
-          "eqlx_use_chap": false,
-          "eqlx_chap_login": "chapadmin",
-          "eqlx_chap_password": "12345",
-          "eqlx_cli_timeout": 30,
-          "eqlx_pool": "default"
-        },
-        "netapp": {
-          "storage_family": "ontap_7mode",
-          "storage_protocol": "iscsi",
-          "nfs_shares": "",
-          "vserver": "",
-          "netapp_server_hostname": "192.168.124.11",
-          "netapp_server_port": 443,
-          "netapp_login": "admin",
-          "netapp_password": "",
-          "netapp_vfiler": "",
-          "netapp_transport_type": "https",
-          "netapp_volume_list": ""
-        },
-        "emc": {
-          "emc_storage_type": "",
-          "ecom_server_ip": "192.168.124.11",
-          "ecom_server_port": 0,
-          "masking_view": "",
-          "ecom_server_username": "admin",
-          "ecom_server_password": ""
-        },
-        "rbd": {
-          "pool": "volumes",
-          "user": "volumes"
-        },
-        "manual": {
-          "driver": "",
-          "config": ""
+        "default": {
+          "volume_type": "raw",
+          "volume_backend_name": "lvm_iscsi",
+          "raw": {
+            "volume_name": "cinder-volumes",
+            "cinder_raw_method": "first"
+          },
+          "local": {
+            "volume_name": "cinder-volumes",
+            "file_name": "/var/lib/cinder/volume.raw",
+            "file_size": 2000
+          },
+          "eqlx": {
+            "san_ip": "192.168.124.11",
+            "san_login": "grpadmin",
+            "san_password": "12345",
+            "san_thin_provision": false,
+            "eqlx_group_name": "group-0",
+            "eqlx_use_chap": false,
+            "eqlx_chap_login": "chapadmin",
+            "eqlx_chap_password": "12345",
+            "eqlx_cli_timeout": 30,
+            "eqlx_pool": "default"
+          },
+          "netapp": {
+            "storage_family": "ontap_7mode",
+            "storage_protocol": "iscsi",
+            "nfs_shares": "",
+            "vserver": "",
+            "netapp_server_hostname": "192.168.124.11",
+            "netapp_server_port": 443,
+            "netapp_login": "admin",
+            "netapp_password": "",
+            "netapp_vfiler": "",
+            "netapp_transport_type": "https",
+            "netapp_volume_list": ""
+          },
+          "emc": {
+            "emc_storage_type": "",
+            "masking_view": "",
+            "ecom_server_ip": "192.168.124.11",
+            "ecom_server_port": 0,
+            "ecom_server_username": "admin",
+            "ecom_server_password": ""
+          },
+          "rbd": {
+            "pool": "volumes",
+            "user": "volumes"
+          },
+          "manual": {
+            "driver": "",
+            "config": ""
+          }
         }
       },
       "api": {
@@ -104,7 +112,7 @@
   "deployment": {
     "cinder": {
       "crowbar-revision": 0,
-      "schema-revision": 6,
+      "schema-revision": 9,
       "element_states": {
           "cinder-controller": [ "readying", "ready", "applying" ],
           "cinder-volume": [ "readying", "ready", "applying" ]

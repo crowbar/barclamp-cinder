@@ -353,7 +353,7 @@ storage_availability_zone=<%= @availability_zone %>
 #memcached_servers=<None>
 
 # default volume type to use (string value)
-#default_volume_type=<None>
+default_volume_type=<%= node[:cinder][:volume].keys.first %>
 
 # time period to generate volume usages for.  Time period must
 # be hour, day, month or year (string value)
@@ -392,7 +392,7 @@ auth_strategy=keystone
 # A list of backend names to use. These backend names should
 # be backed by a unique [CONFIG] group with its options (list
 # value)
-#enabled_backends=<None>
+enabled_backends=<%= node[:cinder][:volume].keys.join(',') %>
 
 # Whether snapshots count against GigaByte quota (boolean
 # value)
@@ -962,7 +962,7 @@ rabbit_virtual_host=<%= @rabbit_settings[:vhost] %>
 #
 
 # Default scheduler driver to use (string value)
-#scheduler_driver=cinder.scheduler.filter_scheduler.FilterScheduler
+scheduler_driver=cinder.scheduler.filter_scheduler.FilterScheduler
 
 
 #
@@ -1034,15 +1034,9 @@ rabbit_virtual_host=<%= @rabbit_settings[:vhost] %>
 #iscsi_num_targets=100
 
 # prefix for iscsi volumes (string value)
-<% unless @emc_params.nil? -%>
-iscsi_target_prefix = iqn.2001-07.com.vnx
-<% end -%>
 
 # The IP address that the iSCSI daemon is listening on (string
 # value)
-<% unless @emc_params.nil? -%>
-iscsi_ip_address = <%= node[:cinder][:volume]["emc"]["emc_ecom_server_ip"] %>
-<% end -%>
 
 # The port that the iSCSI daemon is listening on (integer
 # value)
@@ -1145,39 +1139,21 @@ iscsi_ip_address = <%= node[:cinder][:volume]["emc"]["emc_ecom_server_ip"] %>
 #
 
 # Group name to use for creating volumes (string value)
-<% unless @eqlx_params.nil? -%>
-eqlx_group_name=<%= @eqlx_params["eqlx_group_name"] %>
-<% end -%>
 
 # Timeout for the Group Manager cli command execution (integer
 # value)
-<% unless @eqlx_params.nil? -%>
-eqlx_cli_timeout=<%= @eqlx_params["eqlx_cli_timeout"] %>
-<% end -%>
 
 # Maximum retry count for reconnection (integer value)
 #eqlx_cli_max_retries=5
 
 # Use CHAP authentificaion for targets? (boolean value)
 #eqlx_use_chap=false
-<% unless @eqlx_params.nil? -%>
-eqlx_use_chap=<%= @eqlx_params["eqlx_use_chap"] %>
-<% end -%>
 
 # Existing CHAP account name (string value)
-<% unless @eqlx_params.nil? -%>
-eqlx_chap_login=<%= @eqlx_params["eqlx_chap_login"] %>
-<% end -%>
 
 # Password for specified CHAP account name (string value)
-<% unless @eqlx_params.nil? -%>
-eqlx_chap_password=<%= @eqlx_params["eqlx_chap_password"] %>
-<% end -%>
 
 # Pool in which volumes will be created (string value)
-<% unless @eqlx_params.nil? -%>
-eqlx_pool=<%= @eqlx_params["eqlx_pool"] %>
-<% end -%>
 
 #
 # Options defined in cinder.volume.drivers.glusterfs
@@ -1265,7 +1241,6 @@ eqlx_pool=<%= @eqlx_params["eqlx_pool"] %>
 
 # Name for the VG that will contain exported volumes (string
 # value)
-volume_group=<%= node[:cinder][:volume][:volume_name] %>
 
 # Size of thin provisioning pool (None uses entire cinder VG)
 # (string value)
@@ -1287,39 +1262,21 @@ volume_group=<%= node[:cinder][:volume][:volume_name] %>
 
 # Vfiler to use for provisioning (string value)
 #netapp_vfiler=<None>
-<% unless @netapp_params.nil? -%>
-netapp_vfiler=<%= @netapp_params['netapp_vfiler'] %>
-<% end -%>
 
 # User name for the storage controller (string value)
 #netapp_login=<None>
-<% unless @netapp_params.nil? -%>
-netapp_login=<%= @netapp_params['netapp_login'] %>
-<% end -%>
 
 # Password for the storage controller (string value)
 #netapp_password=<None>
-<% unless @netapp_params.nil? -%>
-netapp_password=<%= @netapp_params['netapp_password'] %>
-<% end -%>
 
 # Cluster vserver to use for provisioning (string value)
 #netapp_vserver=<None>
-<% unless @netapp_params.nil? -%>
-netapp_vserver=<%= @netapp_params['vserver'] %>
-<% end -%>
 
 # Host name for the storage controller (string value)
 #netapp_server_hostname=<None>
-<% unless @netapp_params.nil? -%>
-netapp_server_hostname=<%= @netapp_params['netapp_server_hostname'] %>
-<% end -%>
 
 # Port number for the storage controller (integer value)
 #netapp_server_port=80
-<% unless @netapp_params.nil? -%>
-netapp_server_port=<%= @netapp_params['netapp_server_port'] %>
-<% end -%>
 
 # Threshold available percent to start cache cleaning.
 # (integer value)
@@ -1340,28 +1297,16 @@ netapp_server_port=<%= @netapp_params['netapp_server_port'] %>
 # Comma separated volumes to be used for provisioning (string
 # value)
 #netapp_volume_list=<None>
-<% unless @netapp_params.nil? -%>
-netapp_volume_list=<%= @netapp_params['netapp_volume_list'] %>
-<% end -%>
 
 # Storage family type. (string value)
 #netapp_storage_family=ontap_cluster
-<% unless @netapp_params.nil? -%>
-netapp_storage_family=<%= @netapp_params['storage_family'] %>
-<% end -%>
 
 # The storage protocol to be used on the data path with the
 # storage system; valid values are iscsi or nfs. (string
 # value)
-<% unless @netapp_params.nil? -%>
-netapp_storage_protocol=<%= @netapp_params['storage_protocol'] %>
-<% end -%>
 
 # Transport type protocol (string value)
 #netapp_transport_type=http
-<% unless @netapp_params.nil? -%>
-netapp_transport_type=<%= @netapp_params['netapp_transport_type'] %>
-<% end -%>
 
 
 #
@@ -1471,20 +1416,11 @@ netapp_transport_type=<%= @netapp_params['netapp_transport_type'] %>
 
 # the RADOS pool in which rbd volumes are stored (string
 # value)
-<% unless @rbd_params.nil? -%>
-rbd_pool=<%= @rbd_params['pool'] %>
-<% end -%>
 
 # the RADOS client name for accessing rbd volumes - only set
 # when using cephx authentication (string value)
-<% unless @rbd_params.nil? or @rbd_params['user'].empty? -%>
-rbd_user=<%= @rbd_params['user'] %>
-<% end -%>
 
 # path to the ceph configuration file to use (string value)
-<% unless @rbd_params.nil? -%>
-rbd_ceph_conf=<%= node[:cinder][:volume][:rbd][:ceph_conf] %>
-<% end -%>
 
 # flatten volumes created from snapshots to remove dependency
 # (boolean value)
@@ -1549,24 +1485,12 @@ rbd_ceph_conf=<%= node[:cinder][:volume][:rbd][:ceph_conf] %>
 #
 
 # Use thin provisioning for SAN volumes? (boolean value)
-<% unless @eqlx_params.nil? -%>
-san_thin_provision=<%= @eqlx_params["san_thin_provision"] %>
-<% end -%>
 
 # IP address of SAN controller (string value)
-<% unless @eqlx_params.nil? -%>
-san_ip=<%= @eqlx_params["san_ip"] %>
-<% end -%>
 
 # Username for SAN controller (string value)
-<% unless @eqlx_params.nil? -%>
-san_login=<%= @eqlx_params["san_login"] %>
-<% end -%>
 
 # Password for SAN controller (string value)
-<% unless @eqlx_params.nil? -%>
-san_password=<%= @eqlx_params["san_password"] %>
-<% end -%>
 
 # Filename of private key to use for SSH authentication
 # (string value)
@@ -1827,22 +1751,6 @@ san_password=<%= @eqlx_params["san_password"] %>
 
 # Driver to use for volume creation (string value)
 #volume_driver=cinder.volume.drivers.lvm.LVMISCSIDriver
-<% unless @rbd_params.nil? -%>
-volume_driver=cinder.volume.drivers.rbd.RBDDriver
-<% end -%>
-<% unless @eqlx_params.nil? -%>
-volume_driver=cinder.volume.drivers.eqlx.DellEQLSanISCSIDriver
-<% end -%>
-<% unless @netapp_params.nil? -%>
-volume_driver=cinder.volume.drivers.netapp.common.NetAppDriver
-<% end -%>
-<% unless @emc_params.nil? -%>
-volume_driver=cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver
-<% end -%>
-<% unless @manual_driver.nil? -%>
-volume_driver=<%= @manual_driver %>
-<%= @manual_driver_config %>
-<% end -%>
 
 # Timeout for creating the volume to migrate to when
 # performing volume migration (seconds) (integer value)
@@ -1982,3 +1890,59 @@ signing_dir=/var/cache/cinder/keystone-signing
 #include_service_catalog=true
 
 # Total option count: 382
+<% node[:cinder][:volume].each do |backend_name, backend_params| %>
+[<%= backend_name %>]
+  <% case backend_params[:volume_type] %>
+    <% when "local" %>
+volume_driver=cinder.volume.drivers.lvm.LVMISCSIDriver
+volume_group=<%= backend_params[:local][:volume_name] %>
+    <% when "raw" %>
+volume_driver=cinder.volume.drivers.lvm.LVMISCSIDriver
+volume_group=<%= backend_params[:raw][:volume_name] %>
+    <% when "eqlx" %>
+volume_driver=cinder.volume.drivers.eqlx.DellEQLSanISCSIDriver
+eqlx_group_name=<%= backend_params[:eqlx][:eqlx_group_name] %>
+eqlx_cli_timeout=<%= backend_params[:eqlx][:eqlx_cli_timeout] %>
+eqlx_use_chap=<%= backend_params[:eqlx][:eqlx_use_chap] %>
+eqlx_chap_login=<%= backend_params[:eqlx][:eqlx_chap_login] %>
+eqlx_chap_password=<%= backend_params[:eqlx][:eqlx_chap_password] %>
+eqlx_pool=<%= backend_params[:eqlx][:eqlx_pool] %>
+san_thin_provision=<%= backend_params[:eqlx]["san_thin_provision"] %>
+san_ip=<%= backend_params[:eqlx][:san_ip] %>
+san_login=<%= backend_params[:eqlx][:san_login] %>
+san_password=<%= backend_params[:eqlx][:san_password] %>
+    <% when "netapp" %>
+volume_driver=cinder.volume.drivers.netapp.common.NetAppDriver
+nfs_shares_config=<%= "/etc/cinder/nfs_shares-#{backend_name}" %>
+netapp_vfiler=<%= backend_params[:netapp][:netapp_vfiler] %>
+netapp_login=<%= backend_params[:netapp][:netapp_login] %>
+netapp_password=<%= backend_params[:netapp][:netapp_password] %>
+netapp_vserver=<%= backend_params[:netapp][:vserver] %>
+netapp_server_hostname=<%= backend_params[:netapp][:netapp_server_hostname] %>
+netapp_server_port=<%= backend_params[:netapp][:netapp_server_port] %>
+netapp_volume_list=<%= backend_params[:netapp][:netapp_volume_list] %>
+netapp_storage_family=<%= backend_params[:netapp][:storage_family] %>
+netapp_storage_protocol=<%= backend_params[:netapp][:storage_protocol] %>
+netapp_transport_type=<%= backend_params[:netapp][:netapp_transport_type] %>
+    <% when "emc" %>
+volume_driver=cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver
+cinder_emc_config_file=<%= "/etc/cinder/cinder_emc_config-#{backend_name}.xml" %>
+      <% case backend_params[:emc_storage_type].downcase %>
+      <% when "vnx" %>
+iscsi_target_prefix = iqn.2001-07.com.vnx
+      <% when "vmax" %>
+iscsi_target_prefix = iqn.1992-04.com.emc
+      <% end %>
+iscsi_ip_address = <%= backend_params[:emc][:emc_ecom_server_ip] %>
+    <% when "rbd" %>
+volume_driver=cinder.volume.drivers.rbd.RBDDriver
+rbd_pool=<%= backend_params[:rbd][:pool] %>
+rbd_user=<%= backend_params[:rbd][:user] %>
+rbd_ceph_conf=<%= "/etc/ceph/ceph-#{backend_name}.conf" %>
+    <% when "manual" %>
+volume_driver=<%= backend_params[:manual][:driver] %>
+<%= backend_params[:manual][:config] %>
+    <% end %>
+  <% end %>
+volume_backend_name=<%= backend_params[:volume_backend_name] %>
+<% end %>

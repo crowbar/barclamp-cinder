@@ -23,12 +23,14 @@ def volume_exists(volname)
   Kernel.system("vgs #{volname}")
 end
 
-def make_loopback_volume(node,volname)
+def make_loopback_volume(node, params)
+  volname = params[:volume_name]
   return if volume_exists(volname)
+
   Chef::Log.info("Cinder: Using local file volume backing")
-  fname = node["cinder"]["volume"]["local_file"]
+  fname = params[:file_name]
   fdir = ::File.dirname(fname)
-  fsize = node["cinder"]["volume"]["local_size"] * 1024 * 1024 * 1024 # Convert from GB to Bytes
+  fsize = params[:file_size] * 1024 * 1024 * 1024 # Convert from GB to Bytes
   # this code will be executed at compile-time so we have to use ruby block
   # or get fs capacity from parent directory because at compile-time we have
   # no package resources done
@@ -50,7 +52,7 @@ def make_loopback_volume(node,volname)
   end
 
   if %w(suse).include? node.platform
-    # FIXME: technically, we should regenerate the template when local_file
+    # FIXME: technically, we should regenerate the template when file_name
     # changes; however, since we do not change the volume group...
     template "boot.looplvm" do
       path "/etc/init.d/boot.looplvm"
@@ -74,14 +76,19 @@ def make_loopback_volume(node,volname)
   end
 end
 
-def make_volume(node,volname,unclaimed_disks,claimed_disks)
+def make_volume(node, params):
+  volname = backend_params[:volume_name]
   return if volume_exists(volname)
+
+  unclaimed_disks = BarclampLibrary::Barclamp::Inventory::Disk.unclaimed(node)
+  claimed_disks = BarclampLibrary::Barclamp::Inventory::Disk.claimed(node, "Cinder")
+
   Chef::Log.info("Cinder: Using raw disks for volume backing.")
   if (unclaimed_disks.empty? && claimed_disks.empty?)
     Chef::Log.fatal("There are no suitable disks for cinder")
     raise "There are no suitable disks for cinder"
   elsif claimed_disks.empty?
-    claimed_disks = if node[:cinder][:volume][:cinder_raw_method] == "first"
+    claimed_disks = if params[:cinder_raw_method] == "first"
                       [unclaimed_disks.first]
                     else
                       unclaimed_disks
@@ -112,20 +119,14 @@ def make_volume(node,volname,unclaimed_disks,claimed_disks)
   end
 end
 
-volname = node[:cinder][:volume][:volume_name]
-unclaimed_disks = BarclampLibrary::Barclamp::Inventory::Disk.unclaimed(node)
-claimed_disks = BarclampLibrary::Barclamp::Inventory::Disk.claimed(node,"Cinder")
 
-case
-when node[:cinder][:volume][:volume_type] == "eqlx"
-when node[:cinder][:volume][:volume_type] == "local"
-  make_loopback_volume(node,volname)
-when node[:cinder][:volume][:volume_type] == "raw"
-  make_volume(node,volname,unclaimed_disks,claimed_disks)
-when node[:cinder][:volume][:volume_type] == "netapp"
-when node[:cinder][:volume][:volume_type] == "emc"
-when node[:cinder][:volume][:volume_type] == "manual"
-when node[:cinder][:volume][:volume_type] == "rbd"
+node[:cinder][:volume].each do |backend_name, backend_params|
+  case backend_params[:volume_type]
+  when "eqlx", "local"
+    make_loopback_volume(node, backend_params[:local])
+  when "raw"
+    make_volume(node, backend_params[:raw])
+  end
 end
 
 unless %w(redhat centos).include? node.platform
@@ -156,15 +157,17 @@ end
 
 cinder_service("volume")
 
-case
-when node[:cinder][:volume][:volume_type] == "netapp"
-  file node[:cinder][:volume][:nfs_shares] do
-    content node[:cinder][:volume][:netapp][:nfs_shares]
-    owner "root"
-    group node[:cinder][:group]
-    mode "0640"
-    action :create
-    notifies :restart, resources(:service => "cinder-volume")
+node[:cinder][:volume].each do |backend_name, backend_params|
+  case backend_params[:volume_type]
+  when "netapp"
+    file "/etc/cinder/nfs_shares-#{backend_name}" do
+      content backend_params[:netapp][:nfs_shares]
+      owner "root"
+      group node[:cinder][:group]
+      mode "0640"
+      action :create
+      notifies :restart, resources(:service => "cinder-volume")
+    end
   end
 end
 
