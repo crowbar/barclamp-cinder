@@ -31,7 +31,7 @@ if node[:cinder][:use_gitrepo]
   create_user_and_dirs "cinder" do
     user_name node[:cinder][:user]
   end
-
+  
   execute "cp_policy.json_#{@cookbook_name}" do
     command "cp #{cinder_path}/etc/cinder/policy.json /etc/cinder/"
     creates "/etc/cinder/policy.json"
@@ -73,6 +73,12 @@ if node[:cinder][:use_gitrepo]
   end
 else
   unless %w(redhat centos suse).include? node.platform
+    directory "/var/cache/cinder" do
+      owner node[:cinder][:user]
+      group node[:cinder][:group]
+      mode 0755
+      action :create
+    end
     package "cinder-common"
     package "python-mysqldb"
     package "python-cinder"
