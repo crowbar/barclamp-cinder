@@ -1,10 +1,33 @@
-unless node['roles'].include?('cinder-controller')
-  node["cinder"]["services"]["controller"].each do |name|
-    service name do
-      action [:stop, :disable]
+resource = "cinder"
+main_role = "controller"
+
+unless node["roles"].include?("#{resource}-#{main_role}")
+  # HA part if node is in a cluster
+  if File.exist?("/usr/sbin/crm")
+    log "Removing #{resource} resource"
+    clone_resource = "cl-g-#{resource}"
+
+    pacemaker_clone clone_resource do
+      action [:stop, :delete]
+      only_if "crm configure show #{clone_resource}"
+    end
+
+    node[resource]["services"][main_role].each do |name|
+      name.gsub!("openstack-","")
+      pacemaker_primitive name do
+        action [:stop, :delete]
+        only_if "crm configure show #{name}"
+      end
+    end
+  else
+    # Non HA part if service is on a standalone node
+    node[resource]["services"][main_role].each do |name|
+      service name do
+        action [:stop, :disable]
+      end
     end
   end
-  node['cinder']['services'].delete('controller')
-  node.delete('cinder') if node['ceilometer']['services'].empty?
+  node.delete(resource)
+
   node.save
 end

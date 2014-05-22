@@ -1,10 +1,14 @@
-unless node['roles'].include?('cinder-volume')
-  node["cinder"]["services"]["volume"].each do |name|
+resource = "cinder"
+main_role = "volume"
+
+unless node['roles'].include?("#{resource}-#{main_role}")
+  node[resource]["services"][main_role].each do |name|
     service name do
       action [:stop, :disable]
     end
   end
-  node['cinder']['services'].delete('volume')
-  node.delete('cinder') if node['ceilometer']['services'].empty?
+  node[resource]['services'].delete(main_role)
+  node.delete(resource) if node[resource]['services'].empty?
+
   node.save
 end
