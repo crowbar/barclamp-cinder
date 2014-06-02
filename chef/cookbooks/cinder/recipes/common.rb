@@ -194,6 +194,13 @@ else
   rbd_params = nil
 end
 
+if node[:cinder][:volume][:volume_type] == "vmware"
+  Chef::Log.info("Pushing VMWare params to cinder.conf template")
+  vmware_params = node[:cinder][:volume][:vmware]
+else
+  vmware_params = nil
+end
+
 if node[:cinder][:volume][:volume_type] == "manual"
   Chef::Log.info("Pushing manual params to cinder.conf template")
   manual_driver = node[:cinder][:volume][:manual][:driver]
@@ -296,6 +303,7 @@ template "/etc/cinder/cinder.conf" do
     :emc_params => emc_params,
     :rbd_params => rbd_params,
     :netapp_params => netapp_params,
+    :vmware_params => vmware_params,
     :manual_driver => manual_driver,
     :manual_driver_config => manual_driver_config,
     :sql_connection => sql_connection,

@@ -26,6 +26,7 @@ module Barclamp
           ["EMC", "emc"],
           ["EqualLogic", "eqlx"],
           ["Rados", "rbd"],
+          ["VMWare", "vmware"],
           [t(".volume.manually"), "manual"]
         ],
         selected.to_s

@@ -86,6 +86,16 @@
                     "user": { "type": "str", "required": true }
                     }
                 },
+                "vmware": {
+                  "type": "map",
+                  "required": true,
+                  "mapping": {
+                    "host": { "type": "str", "required": true },
+                    "user": { "type": "str", "required": true },
+                    "password": { "type": "str", "required": true },
+                    "volume": { "type": "str", "required": true }
+                    }
+                },
                 "manual": {
                   "type": "map",
                   "required": true,

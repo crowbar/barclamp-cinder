@@ -76,6 +76,12 @@
           "pool": "volumes",
           "user": "volumes"
         },
+        "vmware": {
+          "host": "",
+          "user": "",
+          "password": "",
+          "volume": "cinder-volume"
+        },
         "manual": {
           "driver": "",
           "config": ""
@@ -104,7 +110,7 @@
   "deployment": {
     "cinder": {
       "crowbar-revision": 0,
-      "schema-revision": 6,
+      "schema-revision": 7,
       "element_states": {
           "cinder-controller": [ "readying", "ready", "applying" ],
           "cinder-volume": [ "readying", "ready", "applying" ]
