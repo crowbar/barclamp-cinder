@@ -81,6 +81,12 @@ en:
           rbd:
             pool: 'RADOS pool for Cinder volumes'
             user: 'RADOS user (Set only if using CephX authentication)'
+          vmware_parameters: 'VMWare Parameters'
+          vmware:
+            host: 'vCenter IP Address'
+            user: 'vCenter Username'
+            password: 'vCenter Password'
+            volume: 'Volume Name'
         api:
           protocol: 'Protocol'
         ssl:

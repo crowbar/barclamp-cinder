@@ -84,6 +84,16 @@
         = string_field %w(volume rbd pool)
         = string_field %w(volume rbd user)
 
+    #vmware_container
+      %fieldset
+        %legend
+          = t('.volume.vmware_parameters')
+
+        = string_field %w(volume vmware host)
+        = string_field %w(volume vmware user)
+        = password_field %w(volume vmware password)
+        = string_field %w(volume vmware volume)
+
     #manual_container
       %fieldset
         %legend

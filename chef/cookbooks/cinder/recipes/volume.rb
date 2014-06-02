@@ -126,6 +126,7 @@ when node[:cinder][:volume][:volume_type] == "netapp"
 when node[:cinder][:volume][:volume_type] == "emc"
 when node[:cinder][:volume][:volume_type] == "manual"
 when node[:cinder][:volume][:volume_type] == "rbd"
+when node[:cinder][:volume][:volume_type] == "vmware"
 end
 
 unless %w(redhat centos).include? node.platform

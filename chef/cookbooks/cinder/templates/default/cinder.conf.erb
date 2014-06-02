@@ -1694,14 +1694,23 @@ san_password=<%= @eqlx_params["san_password"] %>
 # IP address for connecting to VMware ESX/VC server. (string
 # value)
 #vmware_host_ip=<None>
+<% unless @vmware_params.nil? -%>
+vmware_host_ip=<%= @vmware_params["host"] %>
+<% end -%>
 
 # Username for authenticating with VMware ESX/VC server.
 # (string value)
 #vmware_host_username=<None>
+<% unless @vmware_params.nil? -%>
+vmware_host_username=<%= @vmware_params["user"] %>
+<% end -%>
 
 # Password for authenticating with VMware ESX/VC server.
 # (string value)
 #vmware_host_password=<None>
+<% unless @vmware_params.nil? -%>
+vmware_host_password=<%= @vmware_params["password"] %>
+<% end -%>
 
 # Optional VIM service WSDL Location e.g
 # http://<server>/vimService.wsdl. Optional over-ride to
@@ -1719,6 +1728,9 @@ san_password=<%= @eqlx_params["san_password"] %>
 # Name for the folder in the VC datacenter that will contain
 # cinder volumes. (string value)
 #vmware_volume_folder=cinder-volumes
+<% unless @vmware_params.nil? -%>
+vmware_volume_folder=<%= @vmware_params["volume"] %>
+<% end -%>
 
 # Timeout in seconds for VMDK volume transfer between Cinder
 # and Glance. (integer value)
@@ -1838,6 +1850,9 @@ volume_driver=cinder.volume.drivers.netapp.common.NetAppDriver
 <% end -%>
 <% unless @emc_params.nil? -%>
 volume_driver=cinder.volume.drivers.emc.emc_smis_iscsi.EMCSMISISCSIDriver
+<% end -%>
+<% unless @vmware_params.nil? -%>
+volume_driver=cinder.volume.drivers.vmware.vmdk.VMwareVcVmdkDriver
 <% end -%>
 <% unless @manual_driver.nil? -%>
 volume_driver=<%= @manual_driver %>
