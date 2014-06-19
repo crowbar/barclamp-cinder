@@ -19,6 +19,10 @@
 
 include_recipe "#{@cookbook_name}::common"
 
+if node.platform == "ubuntu"
+  package "qemu-utils"
+end
+
 def volume_exists(volname)
   Kernel.system("vgs #{volname}")
 end
