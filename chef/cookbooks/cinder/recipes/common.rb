@@ -73,6 +73,12 @@ if node[:cinder][:use_gitrepo]
   end
 else
   unless %w(redhat centos suse).include? node.platform
+    directory "/var/cache/cinder" do
+      owner node[:cinder][:user]
+      group node[:cinder][:group]
+      mode 0755
+      action :create
+    end
     package "cinder-common"
     package "python-mysqldb"
     package "python-cinder"
