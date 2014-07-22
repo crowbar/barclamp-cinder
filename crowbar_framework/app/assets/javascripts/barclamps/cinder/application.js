@@ -26,7 +26,8 @@ $(document).ready(function($) {
       'manual',
       'local',
       'rbd',
-      'raw'
+      'raw',
+      'eternus'
     ];
 
     var selector = $.map(types, function(val, index) {

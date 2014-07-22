@@ -86,6 +86,17 @@
                     "ecom_server_password": { "type": "str", "required": true }
                   }
                 },
+                "eternus": {
+                  "type": "map", "required": true, "mapping": {
+                    "protocol": { "type": "str", "required": true },
+                    "ip": { "type": "str", "required": true },
+                    "port": { "type": "int", "required": true },
+                    "user": { "type": "str", "required": true },
+                    "password": { "type": "str", "required": true },
+                    "pool": { "type": "str", "required": true },
+                    "iscsi_ip": { "type": "str", "required": true }
+                  }
+                },
                 "rbd": {
                   "type": "map", "required": true, "mapping": {
                     "pool": { "type": "str", "required": true },

@@ -54,7 +54,6 @@ en:
             netapp_vfiler: 'The vFiler unit name if using vFiler to host OpenStack volumes'
             nfs_shares: 'List of Netapp NFS Exports'
             nfs_shares_config_hint: 'Format one entry per line in the form hostname:/vol/path optional-nfs-mount-options'
-
           emc_volume_type: 'EMC'
           emc_parameters: 'EMC Parameters'
           emc:
@@ -77,6 +76,16 @@ en:
             eqlx_chap_login: 'EQLX chap login for targets'
             eqlx_chap_password: 'EQLX chap password for targets'
             eqlx_cli_timeout: 'EQLX CLI command execution timeout'
+          eternus_volume_type: 'Fujitsu ETERNUS DX'
+          eternus_parameters: 'Fujitsu ETERNUS DX Parameters'
+          eternus:
+            protocol: 'ETERNUS Connection Protocol'
+            ip: 'ETERNUS IP for SMIS'
+            port: 'ETERNUS Port for SMIS'
+            user: 'ETERNUS Username for SMIS'
+            password: 'ETERNUS Password for SMIS'
+            pool: 'ETERNUS Poolname'
+            iscsi_ip: 'iSCSI IP'
           manual_volume_type: 'Other Driver'
           manual_parameters: 'Other driver parameters'
           manual:

@@ -76,6 +76,19 @@
         = password_field %w(volume eqlx eqlx_chap_password)
         = integer_field %w(volume eqlx eqlx_cli_timeout)
 
+    #eternus_container
+      %fieldset
+        %legend
+          = t('.volume.eternus_parameters')
+
+        = select_field %w(volume eternus protocol), :collection => :eternus_protocols_for_cinder, "data-showit" => "iscsi", "data-showit-target" => "#volume_eternus_iscsi_ip"
+        = string_field %w(volume eternus ip)
+        = integer_field %w(volume eternus port)
+        = string_field %w(volume eternus user)
+        = password_field %w(volume eternus password)
+        = string_field %w(volume eternus pool)
+        = string_field %w(volume eternus iscsi_ip)
+
     #rbd_container
       %fieldset
         %legend

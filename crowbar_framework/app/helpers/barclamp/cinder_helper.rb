@@ -25,6 +25,7 @@ module Barclamp
           [t(".volume.netapp_volume_type"), "netapp"],
           [t(".volume.emc_volume_type"), "emc"],
           [t(".volume.eqlx_volume_type"), "eqlx"],
+          [t(".volume.eternus_volume_type"), "eternus"],
           [t(".volume.rbd_volume_type"), "rbd"],
           [t(".volume.manual_volume_type"), "manual"]
         ],
@@ -67,6 +68,16 @@ module Barclamp
         [
           ["HTTP", "http"],
           ["HTTPS", "https"]
+        ],
+        selected.to_s
+      )
+    end
+
+    def eternus_protocols_for_cinder(selected)
+      options_for_select(
+        [
+          ["iSCSI", "iscsi"],
+          ["FibreChannel", "fc"]
         ],
         selected.to_s
       )

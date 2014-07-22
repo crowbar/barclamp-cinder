@@ -189,6 +189,23 @@ else
   emc_params = nil
 end
 
+if node[:cinder][:volume][:volume_type] == "eternus"
+  Chef::Log.info("Pushing Eternus params to cinder.conf template")
+  eternus_params = node[:cinder][:volume][:eternus]
+
+  template "/etc/cinder/cinder_eternus_dx_config.xml" do
+    source "cinder_eternus_dx_config.xml.erb"
+    owner "root"
+    group node[:cinder][:group]
+    mode 0640
+    variables(
+              :eternus_params => eternus_params
+             )
+  end
+else
+  eternus_params = nil
+end
+
 if node[:cinder][:volume][:volume_type] == "rbd"
   Chef::Log.info("Pushing Rbd params to cinder.conf template")
   rbd_params = node[:cinder][:volume][:rbd]
@@ -311,6 +328,7 @@ template "/etc/cinder/cinder.conf" do
     :local_params => local_params,
     :eqlx_params => eqlx_params,
     :emc_params => emc_params,
+    :eternus_params => eternus_params,
     :rbd_params => rbd_params,
     :netapp_params => netapp_params,
     :manual_driver => manual_driver,
