@@ -109,6 +109,7 @@
                     "admin_keyring": { "type": "str", "required": true },
                     "pool": { "type": "str", "required": true },
                     "user": { "type": "str", "required": true },
+                    "caps": { "type": "str", "required": true },
                     "secret_uuid": { "type": "str", "required": true }
                     }
                 },
@@ -207,6 +208,7 @@
                       "admin_keyring": { "type": "str", "required": true },
                       "pool": { "type": "str", "required": true },
                       "user": { "type": "str", "required": true },
+                      "caps": { "type": "str", "required": true },
                       "secret_uuid" : { "type": "str", "required": true }
                     }
                   },
