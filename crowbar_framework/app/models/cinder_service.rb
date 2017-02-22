@@ -207,11 +207,17 @@ class CinderService < PacemakerServiceObject
 
     # Generate secrets uuid for libvirt rbd backend
     dirty = false
+    ceph_clients = {}
     proposal = ProposalObject.find_data_bag_item "crowbar/bc-cinder-#{role.inst}"
     role.default_attributes[:cinder][:volumes].each_with_index do |volume, volid|
       next unless volume[:backend_driver] == "rbd"
       if volume[:rbd][:secret_uuid].empty?
-        secret_uuid = `uuidgen`.strip
+
+        unless ceph_clients[volume[:rbd][:user]]
+          ceph_clients[volume[:rbd][:user]] = `uuidgen`.strip
+        end
+        secret_uuid = ceph_clients[volume[:rbd][:user]]
+
         volume[:rbd][:secret_uuid] = secret_uuid
         proposal[:attributes][:cinder][:volumes][volid][:rbd][:secret_uuid] = secret_uuid
         dirty = true
